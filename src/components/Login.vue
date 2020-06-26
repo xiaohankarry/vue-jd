@@ -32,8 +32,8 @@
 			return {
 				//这是登入表单的数据绑定对象
 				loginform:{
-					username:'hqwjk',
-					password:'9999999999'
+					username:'admin',
+					password:'123456'
 				},
 				//这是表单的验证规则对象
 				loginrules:{
@@ -54,19 +54,38 @@
 		resetLoginForm(){
 			this.$refs.loginRef.resetFields()
 		},
+		// login(){
+		// 	this.$refs.loginRef.validate(async valid =>{
+		// 		if(!valid) return;
+		// 		const {data:res} = await this.$http.post('login',this.loginform)
+		// 		if(res.meta.status !== 200) return this.$message.error('登入失败')
+		// 		this.$message.success('登入成功');
+		// 		//要讲token保存到客户端sessionStorage
+		// 		//必须登入后才能访问，token只在当前网站打开期间生效，所以保存到客户端sessionStorage
+		// 		window.sessionStorage.setItem("token",res.data.token);
+		// 		//编程式地跳转到后台主页
+		// 		this.$router.push('/home');
+		// 	})
+		// },
 		login(){
-			this.$refs.loginRef.validate(async valid =>{
+			this.$refs.loginRef.validate( valid =>{
 				if(!valid) return;
-				const {data:res} = await this.$http.post('login',this.loginform)
-				if(res.meta.status !== 200) return this.$message.error('登入失败')
-				this.$message.success('登入成功');
-				//要讲token保存到客户端sessionStorage
-				//必须登入后才能访问，token只在当前网站打开期间生效，所以保存到客户端sessionStorage
-				window.sessionStorage.setItem("token",res.data.token);
-				//编程式地跳转到后台主页
-				this.$router.push('/home');
+				 this.$http.post('login',this.loginform).then(
+					res =>{
+						this.$message.success('登入成功');
+						//要讲token保存到客户端sessionStorage
+						//必须登入后才能访问，token只在当前网站打开期间生效，所以保存到客户端sessionStorage
+						window.sessionStorage.setItem("token",res.data.data.token);
+						//编程式地跳转到后台主页
+						this.$router.push('/home');
+					}
+				 ).catch(
+					err => {
+						this.$message.error('登入失败')
+					}
+				 )
 			})
-		}
+		},
 	}
 	}
 </script>
